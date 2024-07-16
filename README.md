@@ -7,7 +7,7 @@ Medical response machine.
 │   ├── main.py                  # API服务的主文件
 │   ├── models
 │   │   ├── __init__.py
-│   │   └── medical_model.py     # 加载和管理医疗模型
+│   │   └── medbot.py     # 加载和管理医疗模型
 │   ├── gpt
 │   │   ├── __init__.py
 │   │   └── gpt_model.py         # 加载和管理GPT模型

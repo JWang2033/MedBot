@@ -26,10 +26,6 @@ share/python-wheels/
 *.egg
 MANIFEST
 
-# PyInstaller
-*.manifest
-*.spec
-
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
@@ -73,7 +69,8 @@ dmypy.json
 .pyre/
 
 # FastAPI specific
-backend/models/medical_model.pt  # 假设你的医疗模型存放在这个文件路径
+backend/models/medical_model.pt
+backend/models/medbot_model.pt
 
 # Logs and databases
 *.log
@@ -118,5 +115,5 @@ build/
 dist/
 *.log
 
-# Others
+# Other
 *.log

@@ -1,26 +1,33 @@
-from transformers import AutoTokenizer, AutoModelForCausalLM
+import openai
+from backend.config import config
 
-# 加载 GPT 模型
-tokenizer = AutoTokenizer.from_pretrained("gpt2")
-model = AutoModelForCausalLM.from_pretrained("gpt2")
+openai.api_key = config.OPENAI_API_KEY
 
 class GPTModel:
     def __init__(self):
-        self.tokenizer = tokenizer
-        self.model = model
+        self.api_key = config.OPENAI_API_KEY
 
     async def extract_keywords(self, text):
-        prompt = f"Extract keywords from the following text: {text}"
-        inputs = self.tokenizer.encode(prompt, return_tensors='pt')
-        outputs = self.model.generate(inputs, max_length=50)
-        keywords = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": f"Extract keywords from the following text: {text}"}
+            ]
+        )
+        keywords = response['choices'][0]['message']['content']
         return keywords
 
     async def generate_response(self, prompt):
-        inputs = self.tokenizer.encode(prompt, return_tensors='pt')
-        outputs = self.model.generate(inputs, max_length=500)
-        response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
-        return response
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": prompt}
+            ]
+        )
+        answer = response['choices'][0]['message']['content']
+        return answer
 
 gpt = GPTModel()
 
@@ -29,3 +36,4 @@ async def extract_gpt_keywords(text):
 
 async def generate_gpt_response(prompt):
     return await gpt.generate_response(prompt)
+

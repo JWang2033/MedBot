@@ -1,39 +1,29 @@
 import openai
+from openai import OpenAI
 from backend.config import config
 
 openai.api_key = config.OPENAI_API_KEY
+client = OpenAI()
 
-class GPTModel:
-    def __init__(self):
-        self.api_key = config.OPENAI_API_KEY
+def extract_gpt_keywords(text):
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": f"Extract keywords from the following text: {text}"}
+        ]
+    )
+    keywords = response.choices[0].message.content.strip()
 
-    async def extract_keywords(self, text):
-        response = openai.ChatCompletion.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": f"Extract keywords from the following text: {text}"}
-            ]
-        )
-        keywords = response['choices'][0]['message']['content']
-        return keywords
+    return keywords
 
-    async def generate_response(self, prompt):
-        response = openai.ChatCompletion.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": prompt}
-            ]
-        )
-        answer = response['choices'][0]['message']['content']
-        return answer
-
-gpt = GPTModel()
-
-async def extract_gpt_keywords(text):
-    return await gpt.extract_keywords(text)
-
-async def generate_gpt_response(prompt):
-    return await gpt.generate_response(prompt)
-
+def generate_gpt_response(prompt):
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt}
+        ]
+    )
+    answer = response.choices[0].message.content.strip()
+    return answer

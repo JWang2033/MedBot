@@ -1,21 +1,30 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
 from backend.models.medbot import get_diagnosis, extract_medbot_keywords
 from backend.gpt.gpt_model import extract_gpt_keywords, generate_gpt_response
 
 router = APIRouter()
 
+class QuestionRequest(BaseModel):
+    question: str
+
 @router.post("/ask")
-async def ask_question(request: Request):
-    data = await request.json()
-    question = data['question']
+async def ask_question(request: QuestionRequest):
+    question = request.question
 
-    # get keyword using GPT
-    gpt_keywords = await extract_gpt_keywords(question)
+    # gpt keyword
+    gpt_keywords = extract_gpt_keywords(question)
 
-    # diagnosis by medbot
-    diagnosis = get_diagnosis(gpt_keywords)
+    # medbot keyword
+    medbot_keywords = extract_medbot_keywords(question)
 
-    # form natural language response using GPT
-    response = await generate_gpt_response(f"Q: {question}\nDiagnosis: {diagnosis}\nA:")
+    # find best keyword
+    keywords = gpt_keywords if gpt_keywords else medbot_keywords
+
+    # diagnose
+    diagnosis = get_diagnosis(keywords)
+
+    # gpt answer
+    response = generate_gpt_response(f"Q: {question}\nDiagnosis: {diagnosis}\nA:")
 
     return {"response": response}

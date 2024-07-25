@@ -5,11 +5,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Config:
-    # OpenAI API 配置
+    # OpenAI API
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
     # 模型相关配置
-    MEDBOT_MODEL_PATH = "path/to/medbot_model"
+    MEDBOT_MODEL_NAME = "allenai/biomed_roberta_base"
 
     # 应用程序配置
     DEBUG = True
@@ -20,6 +20,6 @@ class Config:
     DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./test.db")
 
     # 其他配置
-    SECRET_KEY = os.getenv("SECRET_KEY", "your_secret_key")
+    SECRET_KEY = os.getenv("SECRET_KEY")
 
 config = Config()

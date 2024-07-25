@@ -6,14 +6,13 @@ class MedBotModel:
         self.model = AutoModelForCausalLM.from_pretrained(model_name)
 
     def extract_keywords(self, text):
-        # 这里可以实现一个简单的关键词提取算法
         inputs = self.tokenizer.encode(text, return_tensors="pt")
         outputs = self.model.generate(inputs, max_length=50)
         keywords = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
         return keywords
 
     def diagnose(self, keywords):
-        # 模拟的诊断结果
+        # diagnose
         return f"Diagnosis based on keywords: {keywords}"
 
 medbot = MedBotModel(model_name="gpt2")
